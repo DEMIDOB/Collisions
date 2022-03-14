@@ -4,7 +4,7 @@ float bordersMomentumConsumption = -0.2f;
 boolean running = false;
 
 int initialBodiesAmount = 200;
-int speed = 5;
+int speed = int(pow(2, 5));
 
 HashSet<Character> numsSet;
 
@@ -12,7 +12,13 @@ void setup() {
   //size(1280, 720);
   fullScreen();
   frameRate(60);
-  randomSeed(4);
+  int seed = 958025;
+  //seed = int(random(1000000000));
+  println("Seed:", seed);
+  println();
+  randomSeed(seed);
+  
+  print(seed);
   
   numsSet = new HashSet<Character>();
   numsSet.add('0');
