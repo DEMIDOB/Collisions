@@ -32,7 +32,7 @@ class Body {
     this.acceleration = new PVector();
     this.netForce = new PVector();
     
-    this.radius = log(mass) / log(1.3);
+    this.radius = log(abs(mass)) / log(1.3);
     
     this.collisionsSet = new HashSet<Integer>();
   }
@@ -63,25 +63,43 @@ class Body {
   public void update() {
     position.add(velocity);
     
-    if (position.x >= width - radius) {
-      position.x = width - radius;
-      velocity.x *= bordersMomentumConsumption;
-    } else if (position.x <= radius) {
-      position.x = radius;
-      velocity.x *= bordersMomentumConsumption;
-    }
-    
-    if (position.y >= height - radius) {
-      position.y = height - radius;
-      velocity.y *= bordersMomentumConsumption;
-    } else if (position.y <= radius) {
-      position.y = radius;
-      velocity.y *= bordersMomentumConsumption;
+    if (bordersMomentumConsumption != 0) {    
+      if (position.x >= width - radius) {
+        position.x = width - radius;
+        velocity.x *= bordersMomentumConsumption;
+      } else if (position.x <= radius) {
+        position.x = radius;
+        velocity.x *= bordersMomentumConsumption;
+      }
+      
+      if (position.y >= height - radius) {
+        position.y = height - radius;
+        velocity.y *= bordersMomentumConsumption;
+      } else if (position.y <= radius) {
+        position.y = radius;
+        velocity.y *= bordersMomentumConsumption;
+      }
+    } else {
+      if (position.x > width + radius) {
+        position.x = -radius;
+      } else if (position.x < -radius) {
+        position.x = width + radius;
+      }
+      
+      if (position.y > height + radius) {
+        position.y = -radius;
+      } else if (position.y < -radius) {
+        position.y = height + radius;
+      }
     }
   }
   
   public void display() {
-    fill(map(mass, 0, 255, 0, width / 2));
+    if (mass > 0)
+      fill(map(mass, 0, 255, 0, width / 2), 0, 0);
+    else
+      fill(0, 0, map(-mass, 0, 255, 0, width / 2));
+    
     //fill(255);
     circle(position.x, height - position.y, radius * 2);
     

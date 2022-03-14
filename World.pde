@@ -25,6 +25,14 @@ class World {
         float allowedDist = b_i.radius + b_j.radius;
         
         if (dist_sq <= allowedDist * allowedDist + b_i.velocityMagSq() + b_j.velocityMagSq()) {
+          if (b_i.mass < 0 && b_j.mass > 0 || b_j.mass < 0 && b_i.mass > 0) {
+            bodies.remove(max(i, j));
+            bodies.remove(min(i, j));
+            
+            // kinda flash (just visual):
+            //fill(255);
+            //circle((b_i.position.x + b_j.position.x) / 2, (b_i.position.y + b_j.position.y) / 2, 200);
+          }
           b_i.collide(b_j);
           //frameRate(1);
           continue;
