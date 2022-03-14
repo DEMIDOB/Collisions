@@ -88,7 +88,7 @@ class Body {
     fill(0);
     textAlign(CENTER, CENTER);
     textSize(20);
-    text("" + id, position.x, height - position.y);
+    //text("" + id, position.x, height - position.y);
   }
   
   public float velocityMagSq() {
@@ -125,11 +125,11 @@ class Body {
     float m1 = this.mass;
     float m2 = b.mass;
     
-    PVector p1 = this.momentum();
-    PVector p2 = b.momentum();
+    PVector p1 = this.momentum().mult(0.5);
+    PVector p2 = b.momentum().mult(0.5);
     
-    PVector e1 = this.kineticEnergy().mult(1);
-    PVector e2 = b.kineticEnergy().mult(1);
+    PVector e1 = this.kineticEnergy().mult(0.5);
+    PVector e2 = b.kineticEnergy().mult(0.5);
     
     PVector conservedMomentum = p1.copy().add(p2).div(2);
     PVector conservedEnergy = e1.copy().add(e2);
