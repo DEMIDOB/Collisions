@@ -4,7 +4,7 @@ float bordersMomentumConsumption = -0.2f;
 boolean running = false;
 
 int initialBodiesAmount = 200;
-int speed = int(pow(2, 5));
+int speed = int(pow(2, 8));
 
 HashSet<Character> numsSet;
 
@@ -12,7 +12,7 @@ void setup() {
   //size(1280, 720);
   fullScreen();
   frameRate(60);
-  int seed = 958025;
+  int seed = 746396608;
   //seed = int(random(1000000000));
   println("Seed:", seed);
   println();
