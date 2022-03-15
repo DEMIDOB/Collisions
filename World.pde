@@ -21,6 +21,19 @@ class World {
         Body b_j = bodies.get(j);
         
         PVector i_to_j = b_j.position.copy().sub(b_i.position);
+
+        if (bordersMomentumConsumption == 0) {
+          if (abs(i_to_j.x) > width / 2) {
+            int sign = i_to_j.x > 0 ? 1 : -1;
+            i_to_j.x -= width * sign;
+          }
+
+          if (abs(i_to_j.y) > height / 2) {
+            int sign = i_to_j.y > 0 ? 1 : -1;
+            i_to_j.y -= height * sign;
+          }
+        }
+
         float dist_sq = i_to_j.magSq();
         float allowedDist = b_i.radius + b_j.radius;
         

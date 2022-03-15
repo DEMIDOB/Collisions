@@ -1,25 +1,23 @@
 World world;
 
-float bordersMomentumConsumption = -0.0f;
+float bordersMomentumConsumption = -0.2f;
 boolean running = false;
 
-int initialBodiesAmount = 5000;
-int speed = int(pow(2, 1));
-int massRange = 10;
+int initialBodiesAmount = 200;
+int speed = int(pow(2, 8));
 
 HashSet<Character> numsSet;
 
 void setup() {
   size(1280, 720);
-  // fullScreen();
+  //fullScreen();
   frameRate(60);
-
-  // Generate seed:
   int seed = 746396608;
   seed = int(random(1000000000));
   println("Seed:", seed);
   println();
   randomSeed(seed);
+  
   print(seed);
   
   numsSet = new HashSet<Character>();
@@ -35,10 +33,17 @@ void setup() {
   numsSet.add('9');
   
   println(solveQuadratic(1, 0, 28));
+  
+  Body b1 = new Body(500, new PVector(width, height / 2));
+  //b1.applyForce(new PVector(-100, 1500));
+  
   world = new World(0.001, new PVector(0, -0.0f));
+  //world.addBody(b1);
+  //world.addBody(new Body(500, new PVector(0, height / 2)));
+  //world.addBody(new Body(500, new PVector(width / 2, height / 2)));
   
   for (int i = 0; i < initialBodiesAmount; ++i) {
-    world.addBody(new Body(random(-massRange, massRange), new PVector(random(width), random(height))));
+    world.addBody(new Body(random(-100, 100), new PVector(random(width), random(height))));
   }
   
   noStroke();
@@ -47,14 +52,14 @@ void setup() {
 
 void draw() {
   if (!running) {
-    fill(255);
+    fill(0);
     rect(25, 25, 15, 50);
     rect(55, 25, 15, 50);
     return;
   }
   
   //background(255, 2);
-  fill(0, 235);
+  fill(255, 255);
   rect(0, 0, width, height);
   
   for (int i = 0; i < speed; ++i) {
@@ -66,9 +71,9 @@ void draw() {
 
 void mousePressed() {
   if (mouseButton == LEFT)
-    world.addBody(new Body(random(0, massRange), new PVector(mouseX, height - mouseY)));
+    world.addBody(new Body(random(10, 100), new PVector(mouseX, height - mouseY)));
   else if (mouseButton == RIGHT)
-    world.addBody(new Body(-random(0, massRange), new PVector(mouseX, height - mouseY)));
+    world.addBody(new Body(-random(10, 50), new PVector(mouseX, height - mouseY)));
   else
     running = !running;
 }

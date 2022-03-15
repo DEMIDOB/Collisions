@@ -96,9 +96,9 @@ class Body {
   
   public void display() {
     if (mass > 0)
-      fill(map(mass, 0, 255, 0, width / 2), 0, 0);
+      fill(map(mass, 0, massRange, 50, 150), 0, 0);
     else
-      fill(0, 0, map(-mass, 0, 255, 0, width / 2));
+      fill(0, 0, map(-mass, 0, massRange, 50, 150));
     
     //fill(255);
     circle(position.x, height - position.y, radius * 2);
