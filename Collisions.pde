@@ -1,17 +1,19 @@
 World world;
 
-float bordersMomentumConsumption = -0.2f;
+final int INITIAL_SIM_SPEED = 1;
+
+float bordersMomentumConsumption = -0.69f; // was -0.2f before
 boolean running = false;
 
 int initialBodiesAmount = 200;
-int speed = int(pow(2, 8));
+int speed = int(pow(2, INITIAL_SIM_SPEED));
 
 HashSet<Character> numsSet;
 
 void setup() {
-  //size(1280, 720);
-  fullScreen();
-  frameRate(60);
+  size(1280, 720);
+  //fullScreen();
+  //frameRate(60);
   int seed = 746396608;
   //seed = int(random(1000000000));
   println("Seed:", seed);
@@ -42,9 +44,9 @@ void setup() {
   //world.addBody(new Body(500, new PVector(0, height / 2)));
   //world.addBody(new Body(500, new PVector(width / 2, height / 2)));
   
-  for (int i = 0; i < initialBodiesAmount; ++i) {
-    world.addBody(new Body(random(-100, 100), new PVector(random(width), random(height))));
-  }
+  //for (int i = 0; i < initialBodiesAmount; ++i) {
+  //  world.addBody(new Body(random(-100, 100), new PVector(random(width), random(height))));
+  //}
   
   noStroke();
   running = initialBodiesAmount > 0;
@@ -86,6 +88,30 @@ void keyPressed() {
     ++speed;
   else if (key == '-')
     --speed;
+    
+  switch (key) {
+    // speed controls:
+    case '=':
+      ++speed;
+      break;
+    case '-':
+      --speed;
+      break;
+      
+    // objects instantiation controls
+    case 'p':
+    case 'з':
+      world.addBody(new Proton(new PVector(mouseX, height - mouseY)));
+      break;
+    case 'e':
+    case 'у':
+      world.addBody(new Electron(new PVector(mouseX, height - mouseY)));
+      break;
+    case 'n':
+    case 'т':
+      world.addBody(new Neutron(new PVector(mouseX, height - mouseY)));
+      break;
+  }
   
   if (numsSet.contains(key))
     speed = int(pow(2, Integer.parseInt("" + key) - 1));

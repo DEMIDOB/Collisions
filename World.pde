@@ -1,14 +1,25 @@
 import java.util.ArrayList;
 import java.util.HashSet;
 
-class World {
-  public float G;
+public static class World {
+  // ========= static relationships: =========
+  
+  public static float k_OVER_G = 100;
+  public static float unitChargeMass = 0.000001;
+  public static final float unitCharge = 0.01;
+  public static final float unitChargeSq = unitCharge * unitCharge;
+  public static boolean CONSIDER_COLLISIONS_ABSTRACTION = false;
+  
+  // =========================================
+  
+  private float G, k;
   public PVector g;
   
   private ArrayList<Body> bodies;
   
   public World(float G, PVector g) {
     this.G = G;
+    this.k = G * k_OVER_G;
     this.g = g;
     
     bodies = new ArrayList<Body>();
@@ -33,19 +44,28 @@ class World {
             //fill(255);
             //circle((b_i.position.x + b_j.position.x) / 2, (b_i.position.y + b_j.position.y) / 2, 200);
           }
-          b_i.collide(b_j);
-          //frameRate(1);
-          continue;
+          
+          if (CONSIDER_COLLISIONS_ABSTRACTION) {
+            b_i.collide(b_j);
+            continue;
+          }
         }
         
-        //frameRate(60);
-        
+        // ==== GRAVITATIONAL FORCE ====
         float gravitationalForceMag = G * b_i.mass * b_j.mass / dist_sq;
         
-        i_to_j.mult(gravitationalForceMag);
+        PVector gravitationalForce_j_to_i = i_to_j.copy().mult(gravitationalForceMag);
         
-        b_i.applyForce(i_to_j);
-        b_j.applyForce(i_to_j.mult(-1));
+        b_i.applyForce(gravitationalForce_j_to_i);
+        b_j.applyForce(gravitationalForce_j_to_i.mult(-1));
+        
+        
+        // ==== COULOMB FORCE ====
+        PVector coulombForce_i_to_j = i_to_j.copy().mult(k * b_i.charge * b_j.charge * unitChargeSq / dist_sq);
+        PVector coulombForce_j_to_i = coulombForce_i_to_j.copy().mult(-1); 
+        
+        b_j.applyForce(coulombForce_i_to_j);
+        b_i.applyForce(coulombForce_j_to_i);
       }
     }
     

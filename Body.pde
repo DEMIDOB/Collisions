@@ -3,7 +3,9 @@ import java.util.ArrayList;
 class Body {
   public int id = 0;
   
-  public float mass;
+  private final float mass;
+  private final int charge; // charge is measured in unit charges which are numerically defined in the World class
+  
   public PVector position;
   public float radius;
   
@@ -14,27 +16,31 @@ class Body {
   private HashSet<Integer> collisionsSet;
   
   public Body(float mass) {
-    this.mass = mass;
-    this.position = new PVector();
-    this.velocity = new PVector();
-    this.acceleration = new PVector();
-    this.netForce = new PVector();
-    
-    this.radius = log(mass) / log(2);
-    
-    this.collisionsSet = new HashSet<Integer>();
+    this(mass, /**/ new PVector()); // charge is 0, initialPosition is (0, 0)
   }
   
-  public Body(float mass, PVector position) {
+  public Body(float mass, PVector initialPosition) {
+    this(mass, 0, initialPosition);
+  }
+  
+  public Body(float mass, int charge, PVector initialPosition) {
+    // constant properties
     this.mass = mass;
-    this.position = position;
+    this.charge = charge;
+    
+    
+    // variable quantities
+    this.position = initialPosition;
     this.velocity = new PVector();
     this.acceleration = new PVector();
+    
     this.netForce = new PVector();
     
-    this.radius = log(abs(mass)) / log(1.3);
+    this.collisionsSet = new HashSet<Integer>(); // is never used if World.CONSIDER_COLLISIONS_ABSTRACTION is set to false
     
-    this.collisionsSet = new HashSet<Integer>();
+    
+    // visual properties
+    this.radius = log(abs(mass)); // / log(1.3);
   }
   
   public void applyForce(PVector force) {
@@ -63,7 +69,9 @@ class Body {
   public void update() {
     position.add(velocity);
     
-    if (bordersMomentumConsumption != 0) {    
+    if (bordersMomentumConsumption == -0.69) {
+      
+    } else if (bordersMomentumConsumption != 0) {    
       if (position.x >= width - radius) {
         position.x = width - radius;
         velocity.x *= bordersMomentumConsumption;
@@ -95,18 +103,21 @@ class Body {
   }
   
   public void display() {
-    if (mass > 0)
-      fill(map(mass, 0, 255, 0, width / 2), 0, 0);
+    if (charge > 0)
+      fill(200, 0, 0); // fill(map(mass, 0, 255, 0, width / 2), 0, 0);
+    else if (charge < 0)
+      fill(0, 0, 200); // fill(0, 0, map(-mass, 0, 255, 0, width / 2));
     else
-      fill(0, 0, map(-mass, 0, 255, 0, width / 2));
+      fill(200);
     
     //fill(255);
     circle(position.x, height - position.y, radius * 2);
     
-    fill(0);
+    fill(255);
     textAlign(CENTER, CENTER);
     textSize(20);
-    //text("" + id, position.x, height - position.y);
+    if (charge != 0)
+      text(charge > 0 ? "+" : "-", position.x, height - position.y);
   }
   
   public float velocityMagSq() {
